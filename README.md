@@ -45,11 +45,25 @@ workflow: local network loading produces heterogeneous emission surfaces,
 demand shifts the balance of influential network features, and controlled
 interventions reveal geographically differentiated decarbonization potential.
 
+### Demand-dependent feature transition
+
+The attribution analysis tracks how the four principal network features
+redistribute their explanatory importance across standardized demand levels.
+It combines the aggregate trajectory, the city-level distribution of SHAP
+shifts, and the transition from predominantly operational to increasingly
+topological control as congestion develops.
+
 <p align="center">
   <img src="docs/assets/showcase/shap-demand-transition.svg" width="100%" alt="Demand-dependent transition in SHAP importance from operational to topological network features">
 </p>
 
 ### Local emission landscapes
+
+Network-wide totals conceal where emissions accumulate within an urban road
+system. The eight-city atlas therefore projects assigned link emissions into
+three-dimensional landscapes, making differences in spatial concentration,
+peak structure, and network-wide heterogeneity directly comparable under the
+same high-demand setting.
 
 <p align="center">
   <img src="docs/assets/showcase/emission-surfaces-eight-cities.svg" width="100%" alt="Two-by-four atlas of three-dimensional road-emission surfaces for eight demand-sensitive cities">
@@ -61,6 +75,12 @@ three-dimensional emission landscapes under high demand.</em></p>
 
 ### Global high-demand pattern
 
+The high-demand map returns the attribution results to their geographic
+context. Each city is positioned by location and colored by the topological
+share of its four leading absolute SHAP contributions, revealing where
+emission outcomes remain operationally controlled and where network topology
+becomes comparatively more influential.
+
 <p align="center">
   <img src="docs/assets/showcase/global-shap-10od.svg" width="100%" alt="Global distribution of operational and topological feature control at 10x OD demand">
 </p>
@@ -70,6 +90,12 @@ geographic distribution of operational and topological control after the
 demand-dependent transition summarized above.</em></p>
 
 ### Global intervention response
+
+Counterfactual experiments test whether the learned feature relationships
+translate into measurable responses after the network is modified and traffic
+is reassigned. The global comparison identifies the best-performing 10%
+intervention for each demand-sensitive city and maps the associated reduction
+in normalized emissions.
 
 <p align="center">
   <img src="docs/assets/showcase/global-intervention-effects.svg" width="100%" alt="Global distribution of the best-performing network interventions and associated emission reductions">
