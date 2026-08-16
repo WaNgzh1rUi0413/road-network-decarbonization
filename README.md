@@ -49,22 +49,26 @@ interventions reveal geographically differentiated decarbonization potential.
   <img src="docs/assets/showcase/shap-demand-transition.svg" width="100%" alt="Demand-dependent transition in SHAP importance from operational to topological network features">
 </p>
 
-<table>
-  <tr>
-    <td width="42%"><strong>Local emission landscape</strong></td>
-    <td width="58%"><strong>Global demand transition</strong></td>
-  </tr>
-  <tr>
-    <td><img src="docs/assets/showcase/emission-surface-beijing.svg" width="100%" alt="Three-dimensional urban road-emission surface for Beijing"></td>
-    <td><img src="docs/assets/showcase/global-shap-transition.svg" width="100%" alt="Global maps of the operational-to-topological SHAP transition at 1x, 5x, and 10x OD demand"></td>
-  </tr>
-  <tr>
-    <td>Link-level assignment and speed patterns form a spatially uneven
-    three-dimensional emissions surface.</td>
-    <td>Across 140 cities, increasing OD demand progressively changes the
-    relative contribution of operational and topological controls.</td>
-  </tr>
-</table>
+### Local emission landscape
+
+<p align="center">
+  <img src="docs/assets/showcase/emission-surface-beijing.svg" width="72%" alt="Three-dimensional urban road-emission surface for Beijing">
+</p>
+
+<p align="center"><em>Link-level assignment and speed patterns form a
+spatially uneven three-dimensional emissions surface.</em></p>
+
+### Global demand transition
+
+<p align="center">
+  <img src="docs/assets/showcase/global-shap-transition.svg" width="100%" alt="Global maps of the operational-to-topological SHAP transition at 1x, 5x, and 10x OD demand">
+</p>
+
+<p align="center"><em>Across 140 cities, increasing OD demand progressively
+changes the relative contribution of operational and topological
+controls.</em></p>
+
+### Global intervention response
 
 <p align="center">
   <img src="docs/assets/showcase/global-intervention-effects.svg" width="100%" alt="Global distribution of the best-performing network interventions and associated emission reductions">
@@ -77,14 +81,16 @@ demand.</em></p>
 ## Reproducibility map
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph INPUT[Versioned inputs]
+        direction LR
         N["140 city node/link tables"]
         K["Original K-center solutions"]
         P["Paper modeling table"]
     end
 
     subgraph NETWORK[Network simulation]
+        direction LR
         T["Network descriptors"]
         O["Topology-aware OD pairs"]
         U["User-equilibrium assignment<br/>1x to 10x demand"]
@@ -92,12 +98,14 @@ flowchart LR
     end
 
     subgraph DISCOVERY[Statistical learning]
+        direction LR
         M["RF, XGBoost, LightGBM,<br/>CatBoost, voting ensemble"]
         S["SHAP attribution"]
         C["Demand-response regimes"]
     end
 
     subgraph INTERVENTION[Counterfactual analysis]
+        direction LR
         R["Capacity, speed, degree,<br/>and density interventions"]
         V["Network validation"]
         A["Reassignment and<br/>emissions aggregation"]
@@ -235,17 +243,36 @@ powershell -ExecutionPolicy Bypass -File scripts\run_full_pipeline.ps1 `
 ```
 
 ```mermaid
-flowchart LR
-    A["Node and link tables"] --> B["Structural descriptors"]
-    A --> C["Ten K-center locations"]
-    C --> D["90 directed OD pairs"]
-    D --> E["1x to 10x demand"]
-    A --> F["Road attributes"]
-    E --> G["User equilibrium"]
+flowchart TB
+    A["Node and link tables"]
+
+    subgraph PREP[Network and demand preparation]
+        direction LR
+        B["Structural descriptors"]
+        C["Ten K-center locations"]
+        D["90 directed OD pairs"]
+        E["1x to 10x demand"]
+        F["Road attributes"]
+    end
+
+    subgraph SIM[Traffic simulation]
+        direction LR
+        G["User equilibrium"]
+        H["Link speed and flow"]
+    end
+
+    subgraph CARBON[Emissions accounting]
+        direction LR
+        I["Velocity-dependent emissions"]
+        J["City-level normalized emissions"]
+    end
+
+    A --> B
+    A --> C --> D --> E
+    A --> F
+    E --> G
     F --> G
-    G --> H["Link speed and flow"]
-    H --> I["Velocity-dependent emissions"]
-    I --> J["City-level normalized emissions"]
+    G --> H --> I --> J
 
     classDef source fill:#EAF2F8,stroke:#4C86B7,color:#17324D,stroke-width:1.5px;
     classDef demand fill:#FFF4DF,stroke:#E9A72C,color:#593D08,stroke-width:1.5px;
@@ -255,6 +282,9 @@ flowchart LR
     class C,D,E demand;
     class G,H assignment;
     class I,J emissions;
+    style PREP fill:#FBFCFD,stroke:#C7D4DE,stroke-width:1px
+    style SIM fill:#F5FBF9,stroke:#9CCFC4,stroke-width:1px
+    style CARBON fill:#FFF7F7,stroke:#E6B2B7,stroke-width:1px
 ```
 
 Network descriptors follow the definitions documented in `data/README.md` and
@@ -296,20 +326,39 @@ powershell -ExecutionPolicy Bypass -File scripts\run_counterfactuals.ps1 `
 ```
 
 ```mermaid
-flowchart TD
+flowchart TB
     B["Original 10x assignment"] --> Q["Rank links by volume/capacity"]
-    Q --> C["Increase road capacity"]
-    Q --> S["Increase speed limit"]
-    Q --> D["Increase average degree"]
-    Q --> R["Reduce density"]
-    C --> V["Validate modified graph"]
+
+    subgraph OPTIONS[Controlled 10% interventions]
+        direction LR
+        C["Road capacity"]
+        S["Speed limit"]
+        D["Average degree"]
+        R["Density"]
+    end
+
+    subgraph AUDIT[Graph reconstruction and audit]
+        direction LR
+        V["Validate modified graph"]
+        K["Recompute K-center locations"]
+    end
+
+    subgraph RESPONSE[Response calculation]
+        direction LR
+        U["Rerun 1x to 10x<br/>user equilibrium"]
+        E["Recompute emissions"]
+        G["Aggregate city and<br/>seed effects"]
+    end
+
+    Q --> C
+    Q --> S
+    Q --> D
+    Q --> R
+    C --> V
     S --> V
     D --> V
     R --> V
-    V --> K["Recompute K-center locations"]
-    K --> U["Rerun 1x to 10x user equilibrium"]
-    U --> E["Recompute emissions"]
-    E --> G["Aggregate city and seed effects"]
+    V --> K --> U --> E --> G
 
     classDef baseline fill:#EAF2F8,stroke:#4C86B7,color:#17324D,stroke-width:1.5px;
     classDef choice fill:#FFF4DF,stroke:#E9A72C,color:#593D08,stroke-width:1.5px;
@@ -319,6 +368,9 @@ flowchart TD
     class C,S,D,R choice;
     class V,K modify;
     class U,E,G rerun;
+    style OPTIONS fill:#FFFBF2,stroke:#EED39B,stroke-width:1px
+    style AUDIT fill:#FFF7F7,stroke:#E6B2B7,stroke-width:1px
+    style RESPONSE fill:#F5FBF9,stroke:#9CCFC4,stroke-width:1px
 ```
 
 The network reconstruction is a controlled counterfactual experiment designed
