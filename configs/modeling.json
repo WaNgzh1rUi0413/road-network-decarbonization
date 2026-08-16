@@ -1,0 +1,15 @@
+{
+  "data": "data/processed/city_features_emissions.xlsx",
+  "sheet": "Sheet3",
+  "test_size": 0.2,
+  "search": "RandomizedSearchCV",
+  "search_iterations": 30,
+  "cross_validation": "LeaveOneOut",
+  "od_levels": ["OD", "2OD", "3OD", "4OD", "5OD", "6OD", "7OD", "8OD", "9OD", "10OD"],
+  "features": [
+    "Average degree", "Clustering coefficient", "Pearson degree correlation",
+    "Efficiency", "Transitivity", "Density", "Characteristic path length",
+    "Average node strength", "Average speed limit", "Average capacity"
+  ],
+  "models": ["random_forest", "xgboost", "lightgbm", "catboost", "voting_ensemble"]
+}
