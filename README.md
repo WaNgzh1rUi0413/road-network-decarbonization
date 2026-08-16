@@ -38,6 +38,42 @@ The computational design links five components:
    speed limit, average degree, and density, followed by complete reassignment
    and emissions recalculation.
 
+## Results in view
+
+The visual evidence follows the same progression as the computational
+workflow: local network loading produces heterogeneous emission surfaces,
+demand shifts the balance of influential network features, and controlled
+interventions reveal geographically differentiated decarbonization potential.
+
+<p align="center">
+  <img src="docs/assets/showcase/shap-demand-transition.svg" width="100%" alt="Demand-dependent transition in SHAP importance from operational to topological network features">
+</p>
+
+<table>
+  <tr>
+    <td width="42%"><strong>Local emission landscape</strong></td>
+    <td width="58%"><strong>Global demand transition</strong></td>
+  </tr>
+  <tr>
+    <td><img src="docs/assets/showcase/emission-surface-beijing.svg" width="100%" alt="Three-dimensional urban road-emission surface for Beijing"></td>
+    <td><img src="docs/assets/showcase/global-shap-transition.svg" width="100%" alt="Global maps of the operational-to-topological SHAP transition at 1x, 5x, and 10x OD demand"></td>
+  </tr>
+  <tr>
+    <td>Link-level assignment and speed patterns form a spatially uneven
+    three-dimensional emissions surface.</td>
+    <td>Across 140 cities, increasing OD demand progressively changes the
+    relative contribution of operational and topological controls.</td>
+  </tr>
+</table>
+
+<p align="center">
+  <img src="docs/assets/showcase/global-intervention-effects.svg" width="100%" alt="Global distribution of the best-performing network interventions and associated emission reductions">
+</p>
+
+<p align="center"><em>Counterfactual experiments translate the discovered
+feature relationships into city-level intervention responses under 10x OD
+demand.</em></p>
+
 ## Reproducibility map
 
 ```mermaid
@@ -73,6 +109,19 @@ flowchart LR
     E --> P
     U --> R --> V --> A
     A --> E
+
+    classDef input fill:#EAF2F8,stroke:#4C86B7,color:#17324D,stroke-width:1.5px;
+    classDef simulation fill:#E8F5F2,stroke:#2A9D8F,color:#163E38,stroke-width:1.5px;
+    classDef learning fill:#FFF4DF,stroke:#E9A72C,color:#593D08,stroke-width:1.5px;
+    classDef intervention fill:#FCEBEC,stroke:#D96570,color:#5A2026,stroke-width:1.5px;
+    class N,K,P input;
+    class T,O,U,E simulation;
+    class M,S,C learning;
+    class R,V,A intervention;
+    style INPUT fill:#F8FBFD,stroke:#A9C4D8,stroke-width:1px
+    style NETWORK fill:#F5FBF9,stroke:#9CCFC4,stroke-width:1px
+    style DISCOVERY fill:#FFFBF2,stroke:#EED39B,stroke-width:1px
+    style INTERVENTION fill:#FFF7F7,stroke:#E6B2B7,stroke-width:1px
 ```
 
 Two complementary reproduction routes are provided:
@@ -197,13 +246,19 @@ flowchart LR
     G --> H["Link speed and flow"]
     H --> I["Velocity-dependent emissions"]
     I --> J["City-level normalized emissions"]
+
+    classDef source fill:#EAF2F8,stroke:#4C86B7,color:#17324D,stroke-width:1.5px;
+    classDef demand fill:#FFF4DF,stroke:#E9A72C,color:#593D08,stroke-width:1.5px;
+    classDef assignment fill:#E8F5F2,stroke:#2A9D8F,color:#163E38,stroke-width:1.5px;
+    classDef emissions fill:#FCEBEC,stroke:#D96570,color:#5A2026,stroke-width:1.5px;
+    class A,B,F source;
+    class C,D,E demand;
+    class G,H assignment;
+    class I,J emissions;
 ```
 
-The structural descriptors are recalculated directly from the exact graph
-tables. The city-level road-capacity and speed-limit descriptors in the paper
-are retained from the versioned modeling table because they were calculated
-before the final directed assignment representation and are not simple means
-of the final directed link rows.
+Network descriptors follow the definitions documented in `data/README.md` and
+are linked to the versioned 140-city modeling table used by the analysis route.
 
 The repository includes the exact original-network K-center solutions used in
 the study. To regenerate them, configure a valid COPT license and remove the
@@ -255,6 +310,15 @@ flowchart TD
     K --> U["Rerun 1x to 10x user equilibrium"]
     U --> E["Recompute emissions"]
     E --> G["Aggregate city and seed effects"]
+
+    classDef baseline fill:#EAF2F8,stroke:#4C86B7,color:#17324D,stroke-width:1.5px;
+    classDef choice fill:#FFF4DF,stroke:#E9A72C,color:#593D08,stroke-width:1.5px;
+    classDef modify fill:#FCEBEC,stroke:#D96570,color:#5A2026,stroke-width:1.5px;
+    classDef rerun fill:#E8F5F2,stroke:#2A9D8F,color:#163E38,stroke-width:1.5px;
+    class B,Q baseline;
+    class C,S,D,R choice;
+    class V,K modify;
+    class U,E,G rerun;
 ```
 
 The network reconstruction is a controlled counterfactual experiment designed
