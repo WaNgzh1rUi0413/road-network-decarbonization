@@ -40,70 +40,92 @@ The computational design links five components:
 
 ## Results in view
 
-The visual evidence follows the same progression as the computational
-workflow: local network loading produces heterogeneous emission surfaces,
-demand shifts the balance of influential network features, and controlled
-interventions reveal geographically differentiated decarbonization potential.
+The principal manuscript figures trace the evidence from predictive validation
+to mechanism, city typology, intervention response, and distributional
+differences. Together they provide the empirical context for the reproducible
+workflows documented below.
 
-### Demand-dependent feature transition
+### Figure 2 | Topology-emissions mapping
 
-The attribution analysis tracks how the four principal network features
-redistribute their explanatory importance across standardized demand levels.
-It combines the aggregate trajectory, the city-level distribution of SHAP
-shifts, and the transition from predominantly operational to increasingly
-topological control as congestion develops.
-
-<p align="center">
-  <img src="docs/assets/showcase/shap-demand-transition.svg" width="100%" alt="Demand-dependent transition in SHAP importance from operational to topological network features">
-</p>
-
-### Local emission landscapes
-
-Network-wide totals conceal where emissions accumulate within an urban road
-system. The eight-city atlas therefore projects assigned link emissions into
-three-dimensional landscapes, making differences in spatial concentration,
-peak structure, and network-wide heterogeneity directly comparable under the
-same high-demand setting.
+We first tested whether road-network descriptors contain reproducible
+information about cross-city transportation emissions. Four tree-based models
+maintained positive held-out predictive performance across all ten demand
+levels, with XGBoost performing strongest across most medium-to-high demand
+settings. At 10x OD demand, out-of-fold predictions for all 140 cities reached
+an R2 of 0.79, an RMSE of 0.018, and a Spearman correlation of 0.89; the global
+error map further shows that larger errors were dispersed rather than confined
+to one region.
 
 <p align="center">
-  <img src="docs/assets/showcase/emission-surfaces-eight-cities.svg" width="100%" alt="Two-by-four atlas of three-dimensional road-emission surfaces for eight demand-sensitive cities">
+  <img src="docs/assets/manuscript/fig2.svg" width="100%" alt="Predictive performance and global validation of the road-network topology-emissions mapping">
 </p>
 
-<p align="center"><em>Eight demand-sensitive cities illustrate how link-level
-assignment and speed patterns produce distinct, spatially uneven
-three-dimensional emission landscapes under high demand.</em></p>
+### Figure 3 | Demand-dependent control of emissions
 
-### Global high-demand pattern
-
-The high-demand map returns the attribution results to their geographic
-context. Each city is positioned by location and colored by the topological
-share of its four leading absolute SHAP contributions, revealing where
-emission outcomes remain operationally controlled and where network topology
-becomes comparatively more influential.
+SHAP attribution identified road capacity, average degree, density, and speed
+limit as the four leading predictors, together accounting for nearly 80% of
+the model's explanatory importance. Their relative influence changed
+systematically with demand: operational constraints dominated under light
+loading, whereas average degree and density gained influence as congestion
+intensified. City-level distributions and global maps show that this transition
+was widespread but spatially heterogeneous.
 
 <p align="center">
-  <img src="docs/assets/showcase/global-shap-10od.svg" width="100%" alt="Global distribution of operational and topological feature control at 10x OD demand">
+  <img src="docs/assets/manuscript/fig3.svg" width="100%" alt="Demand-dependent shift from operational to topological control of transportation emissions">
 </p>
 
-<p align="center"><em>At 10x OD demand, the worldwide city sample reveals the
-geographic distribution of operational and topological control after the
-demand-dependent transition summarized above.</em></p>
+### Figure 4 | Carbon-resilience regimes
 
-### Global intervention response
-
-Counterfactual experiments test whether the learned feature relationships
-translate into measurable responses after the network is modified and traffic
-is reassigned. The global comparison identifies the best-performing 10%
-intervention for each demand-sensitive city and maps the associated reduction
-in normalized emissions.
+Ward hierarchical clustering of the four dominant descriptors separated the
+sample into 104 demand-sensitive and 36 demand-resilient cities. Both response
+regimes occurred across world regions, indicating that they describe network
+behavior rather than fixed geographic categories. Continental distributions
+also reveal demand-dependent differences among North America, Europe, and
+Asia, while the smaller samples from other continents limit broader
+inferential comparisons.
 
 <p align="center">
-  <img src="docs/assets/showcase/global-intervention-effects.svg" width="100%" alt="Global distribution of the best-performing network interventions and associated emission reductions">
+  <img src="docs/assets/manuscript/fig4.svg" width="100%" alt="Hierarchical clustering and the structural dichotomy of urban carbon resilience">
 </p>
 
-<p align="center"><em>Counterfactual experiments translate the discovered
-feature relationships into city-level intervention responses under 10x OD
-demand.</em></p>
+### Figure 5 | Counterfactual decarbonization responses
+
+We then tested whether the inferred feature relationships translate into
+emission reductions after controlled 10% network interventions and complete
+traffic reassignment. Speed-limit modification was the leading strategy for
+99% of demand-sensitive cities at 1x OD demand, but its advantage declined as
+congestion increased. By 10x OD demand, average-degree modification performed
+best in 79% of cities and road capacity in 17%, consistent with the increasing
+importance of structural constraints under heavy loading.
+
+The local emission-change maps show that a beneficial intervention can reduce
+emissions in some parts of a network while increasing them elsewhere. The net
+reduction therefore reflects system-wide flow redistribution rather than a
+uniform decline on every road segment.
+
+<p align="center">
+  <img src="docs/assets/manuscript/fig5.svg" width="100%" alt="Global and city-level carbon-emission responses to counterfactual network interventions">
+</p>
+
+### Figure 6 | Global North-South differences
+
+The economic grouping comprised 88 Global North and 52 Global South cities.
+Demand-sensitive cities were more prevalent in the Global North (86.4%) than
+in the Global South (53.8%), and low-demand emissions were significantly
+higher in the Global North. This gap narrowed with demand and was no longer
+significant from 7x OD onward, with median emissions nearly converging at 10x
+OD demand.
+
+Both groups shifted toward greater topological attribution as demand rose,
+although their difference in topological SHAP share was not significant after
+false-discovery-rate correction. Simulated intervention benefits were also
+broadly comparable between the two groups. The principal difference therefore
+lay in the prevalence of demand sensitivity and low-demand emissions, rather
+than in a persistent disparity in intervention effectiveness.
+
+<p align="center">
+  <img src="docs/assets/manuscript/fig6.svg" width="100%" alt="Economic Global North-South differences in emissions, topology attribution, and intervention benefits">
+</p>
 
 ## Reproducibility map
 
