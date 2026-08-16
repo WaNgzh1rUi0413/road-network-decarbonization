@@ -49,24 +49,25 @@ interventions reveal geographically differentiated decarbonization potential.
   <img src="docs/assets/showcase/shap-demand-transition.svg" width="100%" alt="Demand-dependent transition in SHAP importance from operational to topological network features">
 </p>
 
-### Local emission landscape
+### Local emission landscapes
 
 <p align="center">
-  <img src="docs/assets/showcase/emission-surface-beijing.svg" width="72%" alt="Three-dimensional urban road-emission surface for Beijing">
+  <img src="docs/assets/showcase/emission-surfaces-eight-cities.svg" width="100%" alt="Two-by-four atlas of three-dimensional road-emission surfaces for eight demand-sensitive cities">
 </p>
 
-<p align="center"><em>Link-level assignment and speed patterns form a
-spatially uneven three-dimensional emissions surface.</em></p>
+<p align="center"><em>Eight demand-sensitive cities illustrate how link-level
+assignment and speed patterns produce distinct, spatially uneven
+three-dimensional emission landscapes under high demand.</em></p>
 
-### Global demand transition
+### Global high-demand pattern
 
 <p align="center">
-  <img src="docs/assets/showcase/global-shap-transition.svg" width="100%" alt="Global maps of the operational-to-topological SHAP transition at 1x, 5x, and 10x OD demand">
+  <img src="docs/assets/showcase/global-shap-10od.svg" width="100%" alt="Global distribution of operational and topological feature control at 10x OD demand">
 </p>
 
-<p align="center"><em>Across 140 cities, increasing OD demand progressively
-changes the relative contribution of operational and topological
-controls.</em></p>
+<p align="center"><em>At 10x OD demand, the worldwide city sample reveals the
+geographic distribution of operational and topological control after the
+demand-dependent transition summarized above.</em></p>
 
 ### Global intervention response
 
