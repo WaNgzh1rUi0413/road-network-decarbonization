@@ -1,4 +1,4 @@
-# Network Topology Predicts Urban Mobility Decarbonization Potential
+# A demand-dependent transition in network-structural mitigation of urban traffic emissions
 
 [![Python 3.11](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![C++14](https://img.shields.io/badge/C%2B%2B-14-00599C?logo=cplusplus&logoColor=white)](https://isocpp.org/)
@@ -6,12 +6,14 @@
 [![License: MIT](https://img.shields.io/badge/code%20license-MIT-2EA44F)](LICENSE)
 [![Data: ODbL](https://img.shields.io/badge/OSM%20data-ODbL-7EBC6F)](https://www.openstreetmap.org/copyright)
 
-Core computational code and versioned inputs for the manuscript **"Network
-Topology Predicts Urban Mobility Decarbonization Potential of Global Cities."**
-The study examines how road-network structure and operating conditions shape
-transport emissions across 140 cities, how those relationships change from
-free-flow to congested demand regimes, and whether controlled network
-interventions reproduce the inferred decarbonization responses.
+Core computational code and versioned inputs for the PNAS submission **"A
+demand-dependent transition in network-structural mitigation of urban traffic
+emissions."** The study uses network traffic theory and explainable machine
+learning to isolate how road-network structure shapes traffic emissions across
+140 cities. It tests how the dominant determinants shift from operational
+attributes under light loading to topology under congestion, identifies
+demand-sensitive and demand-resilient city regimes, and evaluates the inferred
+mechanism through controlled counterfactual network interventions.
 
 This repository is intentionally focused on scientific reproduction. It
 contains the analysis and simulation code used for the reported experiments,
@@ -21,7 +23,7 @@ unrelated development files.
 ## Study at a glance
 
 <p align="center">
-  <img src="docs/assets/study-framework.svg" width="100%" alt="Study framework: network processing, topology-aware mobility loading, emissions computation, topology-emissions mapping, and counterfactual network interventions">
+  <img src="docs/assets/manuscript/figure1.png" width="100%" alt="Principled approach linking global road-network sampling, topology-aware loading, traffic assignment, emissions calculation, explainable machine learning, and counterfactual interventions">
 </p>
 
 The computational design links five components:
@@ -29,11 +31,12 @@ The computational design links five components:
 1. **Network processing:** versioned road graphs for 140 cities and a common
    set of structural and operating descriptors.
 2. **Topology-aware mobility loading:** ten spatially distributed centers,
-   90 directed OD pairs, and standardized demand from 1x to 10x.
+   90 directed OD pairs, and standardized demand from 1× to 10×.
 3. **Traffic and emissions:** user-equilibrium assignment followed by a
    velocity-dependent link-emissions model.
-4. **Topology-emissions discovery:** four tree-based regressors, a voting
-   ensemble, SHAP attribution, and demand-response clustering.
+4. **Structure-emissions mapping:** four tree-based regressors, XGBoost-based
+   SHAP attribution, and demand-response clustering; the workflow also exports
+   an auxiliary voting ensemble for reproducibility checks.
 5. **Counterfactual intervention:** controlled 10% changes in road capacity,
    speed limit, average degree, and density, followed by complete reassignment
    and emissions recalculation.
@@ -45,58 +48,57 @@ to mechanism, city typology, intervention response, and distributional
 differences. Together they provide the empirical context for the reproducible
 workflows documented below.
 
-### Figure 2 | Topology-emissions mapping
+### Figure 2 | Structure-emissions mapping
 
-We first tested whether road-network descriptors contain reproducible
-information about cross-city transportation emissions. Four tree-based models
-maintained positive held-out predictive performance across all ten demand
-levels, with XGBoost performing strongest across most medium-to-high demand
-settings. At 10x OD demand, out-of-fold predictions for all 140 cities reached
-an R2 of 0.79, an RMSE of 0.018, and a Spearman correlation of 0.89; the global
-error map further shows that larger errors were dispersed rather than confined
-to one region.
+Four tree-based models maintained positive held-out predictive performance
+across all ten demand levels, with XGBoost providing the strongest overall
+performance. Each model-demand combination was evaluated over 50 independent
+80:20 train-test splits. At 10× OD demand, out-of-fold predictions for all 140
+cities reached an R2 of 0.79, an RMSE of 0.018, and a Spearman correlation of
+0.89. The global error map shows that larger errors were dispersed rather than
+confined to one region.
 
 <p align="center">
-  <img src="docs/assets/manuscript/fig2.svg" width="100%" alt="Predictive performance and global validation of the road-network topology-emissions mapping">
+  <img src="docs/assets/manuscript/figure2.png" width="100%" alt="Predictive performance and global validation of the road-network structure-emissions mapping">
 </p>
 
 ### Figure 3 | Demand-dependent control of emissions
 
-SHAP attribution identified road capacity, average degree, density, and speed
-limit as the four leading predictors, together accounting for nearly 80% of
-the model's explanatory importance. Their relative influence changed
+XGBoost-based SHAP attribution identified road capacity, average degree,
+density, and speed limit as the four leading determinants, together accounting
+for nearly 80% of explanatory importance. Their relative influence changed
 systematically with demand: operational constraints dominated under light
 loading, whereas average degree and density gained influence as congestion
 intensified. City-level distributions and global maps show that this transition
 was widespread but spatially heterogeneous.
 
 <p align="center">
-  <img src="docs/assets/manuscript/fig3.svg" width="100%" alt="Demand-dependent shift from operational to topological control of transportation emissions">
+  <img src="docs/assets/manuscript/figure3.png" width="100%" alt="Demand-dependent transition from operational to topological control of traffic emissions">
 </p>
 
 ### Figure 4 | Carbon-resilience regimes
 
-Ward hierarchical clustering of the four dominant descriptors separated the
+Ward hierarchical clustering of the four dominant determinants separated the
 sample into 104 demand-sensitive and 36 demand-resilient cities. Both response
 regimes occurred across world regions, indicating that they describe network
 behavior rather than fixed geographic categories. Continental distributions
-also reveal demand-dependent differences among North America, Europe, and
-Asia, while the smaller samples from other continents limit broader
-inferential comparisons.
+show persistently higher normalized emissions in the sampled European cities
+and increasingly dispersed outcomes among Asian cities as demand rises; the
+smaller samples from the other continents limit broader inference.
 
 <p align="center">
-  <img src="docs/assets/manuscript/fig4.svg" width="100%" alt="Hierarchical clustering and the structural dichotomy of urban carbon resilience">
+  <img src="docs/assets/manuscript/figure4.png" width="100%" alt="Hierarchical clustering and the dichotomy of cities' carbon resiliency">
 </p>
 
 ### Figure 5 | Counterfactual decarbonization responses
 
-We then tested whether the inferred feature relationships translate into
-emission reductions after controlled 10% network interventions and complete
-traffic reassignment. Speed-limit modification was the leading strategy for
-99% of demand-sensitive cities at 1x OD demand, but its advantage declined as
-congestion increased. By 10x OD demand, average-degree modification performed
-best in 79% of cities and road capacity in 17%, consistent with the increasing
-importance of structural constraints under heavy loading.
+We then tested whether the inferred feature relationships translate into lower
+emissions after controlled 10% network interventions and complete traffic
+reassignment. Speed-limit modification was the leading strategy for 99% of
+demand-sensitive cities at 1× OD demand, but its advantage declined as
+congestion increased. Average-degree modification became the leading strategy
+for 45% of demand-sensitive cities at 5× demand and 79% at 10× demand,
+consistent with the increasing influence of topology under heavy loading.
 
 The local emission-change maps show that a beneficial intervention can reduce
 emissions in some parts of a network while increasing them elsewhere. The net
@@ -104,27 +106,27 @@ reduction therefore reflects system-wide flow redistribution rather than a
 uniform decline on every road segment.
 
 <p align="center">
-  <img src="docs/assets/manuscript/fig5.svg" width="100%" alt="Global and city-level carbon-emission responses to counterfactual network interventions">
+  <img src="docs/assets/manuscript/figure5.png" width="100%" alt="Global and city-level traffic-emission responses to counterfactual network interventions">
 </p>
 
-### Figure 6 | Global North-South differences
+### Figure 6 | Conditional Global North–South disparities
 
 The economic grouping comprised 88 Global North and 52 Global South cities.
 Demand-sensitive cities were more prevalent in the Global North (86.4%) than
-in the Global South (53.8%), and low-demand emissions were significantly
-higher in the Global North. This gap narrowed with demand and was no longer
-significant from 7x OD onward, with median emissions nearly converging at 10x
-OD demand.
+in the Global South (53.8%). Low-demand median emissions were higher in the
+Global North, but the difference narrowed with demand and was no longer
+significant from 7× OD onward. At 10× demand, the medians converged to 0.2401
+and 0.2386, respectively.
 
 Both groups shifted toward greater topological attribution as demand rose,
-although their difference in topological SHAP share was not significant after
-false-discovery-rate correction. Simulated intervention benefits were also
-broadly comparable between the two groups. The principal difference therefore
-lay in the prevalence of demand sensitivity and low-demand emissions, rather
-than in a persistent disparity in intervention effectiveness.
+although their differences in topological SHAP share were not significant
+after false-discovery-rate correction. Simulated intervention benefits were
+also broadly comparable between the two groups. The principal differences
+therefore lay in the prevalence of demand sensitivity and low-demand
+emissions, rather than in intervention effectiveness.
 
 <p align="center">
-  <img src="docs/assets/manuscript/fig6.svg" width="100%" alt="Economic Global North-South differences in emissions, topology attribution, and intervention benefits">
+  <img src="docs/assets/manuscript/figure6.png" width="100%" alt="Conditional Global North–South differences in emissions, topology attribution, and intervention benefits">
 </p>
 
 ## Reproducibility map
@@ -142,14 +144,14 @@ flowchart TB
         direction LR
         T["Network descriptors"]
         O["Topology-aware OD pairs"]
-        U["User-equilibrium assignment<br/>1x to 10x demand"]
+        U["User-equilibrium assignment<br/>1× to 10× demand"]
         E["Link and network emissions"]
     end
 
     subgraph DISCOVERY[Statistical learning]
         direction LR
-        M["RF, XGBoost, LightGBM,<br/>CatBoost, voting ensemble"]
-        S["SHAP attribution"]
+        M["RF, XGBoost, LightGBM,<br/>CatBoost; auxiliary ensemble"]
+        S["XGBoost SHAP attribution"]
         C["Demand-response regimes"]
     end
 
@@ -255,8 +257,9 @@ powershell -ExecutionPolicy Bypass -File scripts\run_analysis.ps1
 
 The full analysis evaluates ten demand levels and 50 deterministic train/test
 splits. For every split it tunes four tree-based regressors with 30 randomized
-search draws and leave-one-out cross-validation, then constructs the voting
-ensemble used for attribution.
+search draws and leave-one-out cross-validation. XGBoost is retained for the
+reported SHAP interpretation; the workflow also constructs an auxiliary voting
+ensemble from the three best cross-validated models in each split.
 
 Principal outputs:
 
@@ -300,7 +303,7 @@ flowchart TB
         B["Structural descriptors"]
         C["Ten K-center locations"]
         D["90 directed OD pairs"]
-        E["1x to 10x demand"]
+        E["1× to 10× demand"]
         F["Road attributes"]
     end
 
@@ -354,7 +357,7 @@ python -m src.preprocessing.build_networks --city-ids 1,2
 ### 4. Reproduce the counterfactual interventions
 
 The original-network pipeline must run first because interventions rank links
-using the original 10x-demand volume-to-capacity ratio.
+using the original 10×-demand volume-to-capacity ratio.
 
 One-city, one-seed audit:
 
@@ -376,7 +379,7 @@ powershell -ExecutionPolicy Bypass -File scripts\run_counterfactuals.ps1 `
 
 ```mermaid
 flowchart TB
-    B["Original 10x assignment"] --> Q["Rank links by volume/capacity"]
+    B["Original 10× assignment"] --> Q["Rank links by volume/capacity"]
 
     subgraph OPTIONS[Controlled 10% interventions]
         direction LR
@@ -394,7 +397,7 @@ flowchart TB
 
     subgraph RESPONSE[Response calculation]
         direction LR
-        U["Rerun 1x to 10x<br/>user equilibrium"]
+        U["Rerun 1× to 10×<br/>user equilibrium"]
         E["Recompute emissions"]
         G["Aggregate city and<br/>seed effects"]
     end
@@ -437,8 +440,8 @@ scope of this experiment.
 | Topology-aware OD centers | `src/od_selection/run_k_center.py` | `k_center/results/**/*.csv` |
 | User-equilibrium assignment | `cpp/traffic_assignment/user_equilibrium.cpp` | `flow/**/<city>_flow.csv` |
 | Velocity-dependent emissions | `src/emissions/compute_emissions.py` | `outputs/emissions/**` |
-| Four regressors and voting ensemble | `src/modeling/train_models.py` | `outputs/modeling/`, `outputs/models/` |
-| SHAP attribution | `src/analysis/compute_shap.py` | `outputs/shap/` |
+| Four regressors and auxiliary voting ensemble | `src/modeling/train_models.py` | `outputs/modeling/`, `outputs/models/` |
+| XGBoost SHAP attribution | `src/analysis/compute_shap.py` | `outputs/shap/` |
 | Demand-response regimes | `src/analysis/cluster_cities.py` | `outputs/clustering/` |
 | Counterfactual network interventions | `src/interventions/run_interventions.py` | `revised_network/neighbor_seed_*/` |
 | Intervention consistency checks | `src/interventions/validate_networks.py` | Console validation report |
@@ -470,9 +473,10 @@ checksums, and generated-data policy.
 
 ## Citation
 
-Publication metadata have intentionally not been guessed. Before creating an
-archival release, complete `CITATION.cff.template`, rename it to
-`CITATION.cff`, and add the final author list, year, DOI, and repository URL.
+This repository accompanies the PNAS submission **"A demand-dependent
+transition in network-structural mitigation of urban traffic emissions."** A
+complete `CITATION.cff` should be created after the journal publication year,
+DOI, and archival repository metadata have been assigned.
 
 For questions about the computational workflow, open a GitHub issue with the
 command used, operating system, Python version, and the relevant log excerpt.
